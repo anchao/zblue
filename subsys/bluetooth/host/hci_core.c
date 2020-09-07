@@ -7803,7 +7803,7 @@ int bt_le_adv_start_legacy(const struct bt_le_adv_param *param,
 	err = le_adv_set_random_addr(adv, param->options, dir_adv,
 				     &set_param.own_addr_type);
 	if (err) {
-		goto failed;
+		return err;
 	}
 
 	if (dir_adv) {
@@ -7835,15 +7835,14 @@ int bt_le_adv_start_legacy(const struct bt_le_adv_param *param,
 
 	buf = bt_hci_cmd_create(BT_HCI_OP_LE_SET_ADV_PARAM, sizeof(set_param));
 	if (!buf) {
-		err = -ENOBUFS;
-		goto failed;
+		return -ENOBUFS;
 	}
 
 	net_buf_add_mem(buf, &set_param, sizeof(set_param));
 
 	err = bt_hci_cmd_send_sync(BT_HCI_OP_LE_SET_ADV_PARAM, buf, NULL);
 	if (err) {
-		goto failed;
+		return err;
 	}
 
 	if (!dir_adv) {
@@ -7851,7 +7850,7 @@ int bt_le_adv_start_legacy(const struct bt_le_adv_param *param,
 				    scannable,
 				    param->options & BT_LE_ADV_OPT_USE_NAME);
 		if (err) {
-			goto failed;
+			return err;
 		}
 	}
 
@@ -7864,7 +7863,7 @@ int bt_le_adv_start_legacy(const struct bt_le_adv_param *param,
 				goto set_adv_state;
 			}
 
-			goto failed;
+			return err;
 		}
 	}
 
@@ -7876,7 +7875,7 @@ int bt_le_adv_start_legacy(const struct bt_le_adv_param *param,
 			bt_conn_unref(conn);
 		}
 
-		goto failed;
+		return err;
 	}
 
 	if (IS_ENABLED(CONFIG_BT_PERIPHERAL) && conn) {
@@ -7904,11 +7903,6 @@ set_adv_state:
 			  param->options & BT_LE_ADV_OPT_USE_IDENTITY);
 
 	return 0;
-
-failed:
-	adv_delete_legacy();
-
-	return err;
 }
 
 static int le_ext_adv_param_set(struct bt_le_ext_adv *adv,
