@@ -12,6 +12,6 @@ source "$APPSDIR/external/zblue/subsys/bluetooth/services/Kconfig.bas"
 
 source "$APPSDIR/external/zblue/subsys/bluetooth/services/Kconfig.hrs"
 
-source "subsys/bluetooth/services/ots/Kconfig"
+source "$APPSDIR/external/zblue/subsys/bluetooth/services/ots/Kconfig"
 
 endmenu

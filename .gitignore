@@ -50,3 +50,19 @@ TAGS
 tags
 
 .idea
+
+# NuttX part
+.built
+.depend
+Make.dep
+port/include/drivers
+port/include/fs
+port/include/settings
+port/subsys/bluetooth/shell/bredr.c
+port/subsys/bluetooth/shell/bt.c
+port/subsys/bluetooth/shell/gatt.c
+port/subsys/bluetooth/shell/iso.c
+port/subsys/bluetooth/shell/l2cap.c
+port/subsys/bluetooth/shell/mesh.c
+port/subsys/bluetooth/shell/rfcomm.c
+port/subsys/bluetooth/shell/ticker.c
