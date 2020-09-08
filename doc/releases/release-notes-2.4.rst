@@ -77,6 +77,19 @@ API Changes
   This renaming was done to get rid of legacy names, for which the reasons
   do no longer apply.
 
+* All device instances got a const qualifier. So this applies to all APIs
+  manipulating ``struct device *`` (ADC, GPIO, I2C, ...). In order to avoid
+  const qualifier loss on ISRs, all ISRs now take a ``const *void`` as a
+  paremeter as well.
+
+* The ``_gatt_`` and ``_GATT_`` infixes have been removed for the HRS, DIS
+  and BAS APIs and the Kconfig options.
+
+* ``<include/bluetooth/gatt.h>`` callback :c:func:`bt_gatt_attr_func_t` used by
+  :c:func:`bt_gatt_foreach_attr` and :c:func:`bt_gatt_foreach_attr_type` has
+  been changed to always pass the original pointer of attributes along with its
+  resolved handle.
+
 Deprecated in this release
 ==========================
 
@@ -98,6 +111,10 @@ Removed APIs in this release
 Stable API changes in this release
 ==================================
 
+* USB
+
+  * HID class callbacks now takes a parameter ``const struct device*`` which
+    is the HID device for which callback was called.
 
 Kernel
 ******
@@ -111,9 +128,28 @@ Architectures
 
 * ARM:
 
-  * Interrupt vector relaying feature support is extended to Cortex-M Mainline
-    architecture variants
+  * AARCH32
 
+    * Added support for ARM Cortex-M1 architecture.
+    * Implemented the timing API in Cortex-M architecture using the Data
+      Watchpoint and Trace (DWT) unit.
+    * The interrupt vector relaying feature support was extended to Cortex-M
+      Mainline architecture variants.
+    * Cortex-M fault handling implementation was enhanced by adding an option to
+      generate and supply the full register state to the kernel fatal error
+      handling mechanism.
+    * Fixed Cortex-M boot sequence for single-threaded applications
+      (CONFIG_MULTITHREADING=n).
+    * Added thread safety to Non-Secure entry function calls in ARMv8-M
+      architecture.
+    * Fixed stack randomization for main thread.
+    * Fixed exception vector table alignment in Cortex-M architecture
+    * Increased test coverage in QEMU for ARMv6-M architecture variant.
+    * Removed the implementation of arch_mem_domain_* APIs for Cortex-M
+
+  * AARCH64
+
+    * Re-implemented thread context-switch to use the _arch_switch() API
 
 * POSIX:
 
@@ -185,6 +221,7 @@ Drivers and Sensors
 
 * EEPROM
 
+  * Added driver supporting the on-chip EEPROM found on NXP LPC11U6X MCUs.
 
 * Entropy
 
@@ -196,6 +233,11 @@ Drivers and Sensors
 
 
 * Flash
+
+  * The driver selected by ``CONFIG_SPI_FLASH_W25QXXDV`` has been
+    removed as it is unmaintained and all its functionality is available
+    through ``CONFIG_SPI_NOR``.  Out of tree uses should convert to the
+    supported driver using the ``jedec,spi-nor`` compatible.
 
 
 * GPIO
@@ -349,18 +391,22 @@ Libraries / Subsystems
     will likely require some porting work. Refer to `LVGL 7 Release notes
     <https://github.com/lvgl/lvgl/releases/tag/v7.0.0>`_ for more information.
 
+  * LVGL Kconfig option names have been aligned with LVGL. All LVGL
+    configuration options ``LV_[A-Z0-9_]`` have a matching Zephyr Kconfig
+    option named as ``CONFIG_LVGL_[A-Z0-9_]``.
+
   * LVGL Kconfig constants have been aligned with upstream suggested defaults.
     If your application relies on any of the following Kconfig defaults consider
     checking if the new values are good or they need to be adjusted:
 
-    * :option:`CONFIG_LVGL_HOR_RES`
-    * :option:`CONFIG_LVGL_VER_RES`
+    * :option:`CONFIG_LVGL_HOR_RES_MAX`
+    * :option:`CONFIG_LVGL_VER_RES_MAX`
     * :option:`CONFIG_LVGL_DPI`
-    * :option:`CONFIG_LVGL_SCREEN_REFRESH_PERIOD`
-    * :option:`CONFIG_LVGL_INPUT_REFRESH_PERIOD`
-    * :option:`CONFIG_LVGL_INPUT_DRAG_THROW_SLOW_DOWN`
-    * :option:`CONFIG_LVGL_TEXT_LINE_BREAK_LONG_LEN`
-    * :option:`CONFIG_LVGL_OBJ_CHART_AXIS_TICK_LABEL_MAX_LEN`
+    * :option:`CONFIG_LVGL_DISP_DEF_REFR_PERIOD`
+    * :option:`CONFIG_LVGL_INDEV_DEF_READ_PERIOD`
+    * :option:`CONFIG_LVGL_INDEV_DEF_DRAG_THROW`
+    * :option:`CONFIG_LVGL_TXT_LINE_BREAK_LONG_LEN`
+    * :option:`CONFIG_LVGL_CHART_AXIS_TICK_LABEL_MAX_LEN`
 
   * Note that ROM usage is significantly higher on v7 for minimal
     configurations. This is in part due to new features such as the new drawing

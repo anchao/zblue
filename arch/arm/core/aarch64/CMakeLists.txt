@@ -3,7 +3,8 @@
 zephyr_library()
 
 if (CONFIG_COVERAGE)
-  toolchain_cc_coverage()
+  zephyr_compile_options($<TARGET_PROPERTY:compiler,coverage>)
+  zephyr_link_libraries($<TARGET_PROPERTY:linker,coverage>)
 endif ()
 
 zephyr_library_sources(
@@ -13,8 +14,7 @@ zephyr_library_sources(
   irq_manage.c
   prep_c.c
   reset.S
-  swap.c
-  swap_helper.S
+  switch.S
   thread.c
   vector_table.S
 )

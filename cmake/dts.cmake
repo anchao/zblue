@@ -66,7 +66,11 @@ endif()
 if(SUPPORTS_DTS)
   if(DTC_OVERLAY_FILE)
     # Convert from space-separated files into file list
-    string(REPLACE " " ";" DTC_OVERLAY_FILE_AS_LIST ${DTC_OVERLAY_FILE})
+    string(REPLACE " " ";" DTC_OVERLAY_FILE_RAW_LIST ${DTC_OVERLAY_FILE})
+    foreach(file ${DTC_OVERLAY_FILE_RAW_LIST})
+      file(TO_CMAKE_PATH "${file}" cmake_path_file)
+      list(APPEND DTC_OVERLAY_FILE_AS_LIST ${cmake_path_file})
+    endforeach()
     list(APPEND
       dts_files
       ${DTC_OVERLAY_FILE_AS_LIST}
@@ -122,6 +126,10 @@ if(SUPPORTS_DTS)
   set(CACHED_DTS_ROOT_BINDINGS ${DTS_ROOT_BINDINGS} CACHE INTERNAL
     "DT bindings root directories")
 
+  if(NOT DEFINED CMAKE_DTS_PREPROCESSOR)
+    set(CMAKE_DTS_PREPROCESSOR ${CMAKE_C_COMPILER})
+  endif()
+
   # TODO: Cut down on CMake configuration time by avoiding
   # regeneration of devicetree_unfixed.h on every configure. How
   # challenging is this? What are the dts dependencies? We run the
@@ -133,13 +141,14 @@ if(SUPPORTS_DTS)
   # intermediary file *.dts.pre.tmp. Also, generate a dependency file
   # so that changes to DT sources are detected.
   execute_process(
-    COMMAND ${CMAKE_C_COMPILER}
+    COMMAND ${CMAKE_DTS_PREPROCESSOR}
     -x assembler-with-cpp
     -nostdinc
     ${DTS_ROOT_SYSTEM_INCLUDE_DIRS}
     ${DTC_INCLUDE_FLAG_FOR_DTS}  # include the DTS source and overlays
     ${NOSYSDEF_CFLAG}
     -D__DTS__
+    ${DTS_EXTRA_CPPFLAGS}
     -P
     -E   # Stop after preprocessing
     -MD  # Generate a dependency file as a side-effect

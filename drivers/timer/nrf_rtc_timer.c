@@ -166,7 +166,7 @@ static void set_protected_absolute_alarm(uint32_t cycles)
  * it by pointer at runtime, maybe?) so we don't have this leaky
  * symbol.
  */
-void rtc_nrf_isr(void *arg)
+void rtc_nrf_isr(const void *arg)
 {
 	ARG_UNUSED(arg);
 	event_clear();
@@ -186,7 +186,7 @@ void rtc_nrf_isr(void *arg)
 	z_clock_announce(IS_ENABLED(CONFIG_TICKLESS_KERNEL) ? dticks : (dticks > 0));
 }
 
-int z_clock_driver_init(struct device *device)
+int z_clock_driver_init(const struct device *device)
 {
 	ARG_UNUSED(device);
 

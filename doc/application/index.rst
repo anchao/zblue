@@ -587,11 +587,11 @@ again.
 .. _application_debugging:
 .. _custom_board_definition:
 
-Custom Board, DeviceTree and SOC Definitions
+Custom Board, Devicetree and SOC Definitions
 ********************************************
 
 In cases where the board or platform you are developing for is not yet
-supported by Zephyr, you can add board, DeviceTree and SOC definitions
+supported by Zephyr, you can add board, Devicetree and SOC definitions
 to your application without having to add them to the Zephyr tree.
 
 The structure needed to support out-of-tree board and SOC development
@@ -752,10 +752,10 @@ Zephyr boilerplate with ``find_package(Zephyr ...)``.
 
 .. _dts_root:
 
-DeviceTree Definitions
+Devicetree Definitions
 ======================
 
-DeviceTree directory trees are found in ``APPLICATION_SOURCE_DIR``,
+Devicetree directory trees are found in ``APPLICATION_SOURCE_DIR``,
 ``BOARD_DIR``, and ``ZEPHYR_BASE``, but additional trees, or DTS_ROOTs,
 can be added by creating this directory tree::
 
@@ -783,6 +783,20 @@ You can also define the variable in the application :file:`CMakeLists.txt`
 file. Make sure to do so **before** pulling in the Zephyr boilerplate with
 ``find_package(Zephyr ...)``.
 
+Devicetree source are passed through the C preprocessor, so you can
+include files that can be located in a ``DTS_ROOT`` directory.  By
+convention devicetree include files have a ``.dtsi`` extension.
+
+You can also use the preprocessor to control the content of a devicetree
+file, by specifying directives through the ``DTS_EXTRA_CPPFLAGS`` CMake
+Cache variable:
+
+.. zephyr-app-commands::
+   :tool: all
+   :board: <board name>
+   :gen-args: -DDTS_EXTRA_CPPFLAGS=-DTEST_ENABLE_FEATURE
+   :goals: build
+   :compact:
 
 Application Debugging
 *********************
