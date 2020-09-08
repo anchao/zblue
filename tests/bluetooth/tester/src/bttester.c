@@ -215,6 +215,10 @@ static void cmd_handler(void *p1, void *p2, void *p3)
 					   cmd->hdr.data, len);
 			break;
 #endif /* CONFIG_BT_MESH */
+		case BTP_SERVICE_ID_SYSTEM:
+			tester_handle_system(cmd->hdr.opcode, cmd->hdr.index,
+					     cmd->hdr.data, len);
+			break;
 		default:
 			LOG_WRN("unknown service: 0x%x", cmd->hdr.service);
 			tester_rsp(cmd->hdr.service, cmd->hdr.opcode,

@@ -58,6 +58,7 @@ Make.dep
 port/include/drivers
 port/include/fs
 port/include/settings
+port/include/power
 port/subsys/bluetooth/shell/bredr.c
 port/subsys/bluetooth/shell/bt.c
 port/subsys/bluetooth/shell/gatt.c

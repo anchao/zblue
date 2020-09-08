@@ -19,6 +19,8 @@
 #define BTP_SERVICE_ID_L2CAP	3
 #define BTP_SERVICE_ID_MESH	4
 
+#define BTP_SERVICE_ID_SYSTEM	0xee
+
 #define BTP_STATUS_SUCCESS	0x00
 #define BTP_STATUS_FAILED	0x01
 #define BTP_STATUS_UNKNOWN_CMD	0x02
@@ -996,3 +998,5 @@ uint8_t tester_init_mesh(void);
 uint8_t tester_unregister_mesh(void);
 void tester_handle_mesh(uint8_t opcode, uint8_t index, uint8_t *data, uint16_t len);
 #endif /* CONFIG_BT_MESH */
+
+void tester_handle_system(uint8_t opcode, uint8_t index, uint8_t *data, uint16_t len);
