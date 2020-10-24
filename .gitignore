@@ -55,6 +55,7 @@ tags
 .built
 .depend
 Make.dep
+port/include/bluetooth
 port/include/drivers
 port/include/fs
 port/include/settings
